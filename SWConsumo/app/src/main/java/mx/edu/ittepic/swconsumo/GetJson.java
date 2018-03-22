@@ -25,8 +25,7 @@ public class GetJson extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-
-            URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Tepic,mx&APPID=2b05b51c405c3834f1a66d2765eacc38");
+            URL url = new URL("https://query.yahooapis.com/v1/public/yql?q=select%20astronomy,atmosphere%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Tepic%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -35,14 +34,14 @@ public class GetJson extends AsyncTask<Void,Void,Void> {
                 line = bufferedReader.readLine();
                 data += line;
             }
+            Log.e("at",data.substring(data.length()-125,data.length()-56));
+            Log.e("hola",data.substring(data.length()-125,data.length()-56));
 
-            JSONObject atmosphere= new JSONObject(data.substring(data.length()-125,data.length()-56));
-            JSONObject astronomy= new JSONObject(data.substring(data.length()-43,data.length()-3));
-
-            //atmosphere a.substring(a.length-125,a.length-56) humidity pressure
-            //astronomy a.substring(a.length-43,a.length-3)    sunrise sunset
-
-
+            JSONObject atmosphere= new JSONObject(data.substring(data.length()-129,data.length()-60));
+            JSONObject astronomy= new JSONObject(data.substring(data.length()-47,data.length()-7));
+            Log.e("at",atmosphere.toString());
+            Log.e("as",astronomy.toString());
+            Log.e("hola","hola");
             singleParsed = "Humedad:" + atmosphere.get("humidity") + "\n"+
                     "Presión:" + atmosphere.get("pressure") + "\n"+
                     "Amanecer:" + astronomy.get("sunrise") + "\n"+
@@ -51,10 +50,13 @@ public class GetJson extends AsyncTask<Void,Void,Void> {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Log.e("MalformedURLException",e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("IO",e.getMessage());
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e("JSON",e.getMessage());
         }
         return null;
     }
